@@ -1,6 +1,6 @@
 {
   "name": "invisible-ink",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "See what AI sees on a web page: hidden text, invisible Unicode and instructions aimed at AI assistants. Runs only when you click it.",

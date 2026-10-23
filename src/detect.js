@@ -53,7 +53,11 @@ export function invisibleMarks(text) {
 }
 
 // Phrases that only make sense addressed to an AI. Each carries a weight; the strongest wins and others add a little.
+// who a line is addressed to: "AI assistants", "LLM agents", a named assistant. Plain "agents" or
+// "assistants" alone could be estate agents or teaching assistants, so they need an AI word in front.
+const AI_READER = String.raw`(?:(?:ai|llm|language model)s?\s+(?:assistants?|agents?|models?|chatbots?|crawlers?|systems?|tools?)|chatbots?|llms?|chatgpt|copilot|gemini|claude|perplexity)`;
 const CUES = [
+  [new RegExp(String.raw`\b(?:note|message|instructions?|reminder|attention)\s+(?:for|to)\s+(?:any\s+|all\s+)?${AI_READER}\b|(?:^|[.!?])\s*${AI_READER}\s*[:,]|\b(?:dear|hey|hi)\s+${AI_READER}\b`, 'im'), 0.85, 'speaks directly to AI assistants'],
   [/\b(ignore|disregard|forget|override)\b.{0,30}\b(previous|prior|above|earlier|all|your|system)\b.{0,20}\b(instructions?|prompts?|rules|directions)\b/i, 1, 'tells it to ignore its instructions'],
   [/\bsystem prompt\b|\bdeveloper mode\b|\bjailbreak\b/i, 0.9, 'mentions its system prompt or modes'],
   [/^\s*(system|assistant)\s*:/im, 0.8, 'is written as a message to the AI'],
@@ -63,7 +67,7 @@ const CUES = [
   [/\b(do not|don'?t|never)\s+(tell|mention|reveal|show)\s+(this|the user|anyone)/i, 0.85, 'asks to keep something from the user'],
   [/\b(send|email|forward|post|upload|include|paste)\b.{0,60}\b(the user'?s?|their|your)\b.{0,30}\b(messages?|address|email|password|history|data|details|conversation)/i, 0.95, 'asks for the user’s data'],
   [/\b(open|visit|navigate to|go to|fetch|click)\b.{0,20}(https?:\/\/|www\.)/i, 0.6, 'sends the AI to a link'],
-  [/\b(tell|say to|convince|recommend)\b.{0,15}\b(the )?user\b/i, 0.55, 'tells the AI what to say to the user'],
+  [/\b(tell|say to|convince|recommend)\b.{0,15}\b(the )?(user|reader|visitor)\b/i, 0.55, 'tells the AI what to say to the user'],
   [/\bwhen (a|the) user asks\b|\bin your (answer|reply|response|summary)\b/i, 0.7, 'tells the AI how to answer'],
   [/\b(rate|review|summari[sz]e)\b.{0,40}\b(five stars|5 stars|perfectly safe|the best)\b/i, 0.6, 'scripts the AI’s verdict'],
 ];
