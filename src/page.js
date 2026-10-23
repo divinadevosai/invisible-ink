@@ -199,7 +199,13 @@ export function scanPage(doc = document, skip = null) {
   }
 
   // text a model reads that never appears as page text
+  const outOfTime = () => {
+    if (performance.now() - started < MAX_MS * 1.5) return false;
+    quiet.stoppedEarly = true;
+    return true;
+  };
   for (const el of doc.querySelectorAll(ATTRS.map(([a]) => `[${a}]`).join(','))) {
+    if (outOfTime()) break;
     if (el === skip) continue;
     for (const [attr, label] of ATTRS) {
       const v = el.getAttribute(attr);
@@ -210,6 +216,7 @@ export function scanPage(doc = document, skip = null) {
     }
   }
   for (const m of doc.querySelectorAll(METAS)) {
+    if (outOfTime()) break;
     const v = m.getAttribute('content') ?? '';
     smuggled(v, 'in the page description', null);
     const { score, reasons } = aiScore(v);

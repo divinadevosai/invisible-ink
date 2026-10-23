@@ -6,6 +6,8 @@ Pages can carry text that people never see but AI assistants read: white-on-whit
 
 Click Invisible Ink (or press **Alt+Shift+X**) and the page goes under a UV lamp. Hidden ink glows where it sits, and an evidence card lists everything written for an AI rather than for you, with the reasons it was flagged. Click again or press **Esc** to close.
 
+The count also appears on the toolbar icon. That number comes from the extension itself, so a page can't hide or fake it, even if it tampers with the card drawn on the page.
+
 ## What it finds
 
 | | |
@@ -20,8 +22,9 @@ It shows what's hidden. It can't prove a page is safe.
 ## Privacy
 
 - Runs only when you click it, and only on that tab (`activeTab`). No access to any site otherwise.
-- Reads the page and draws on top of it. Doesn't change the page, store anything or connect anywhere: the extension has no network code, no storage permission, and no pages of its own.
-- Everything ships in the package (fonts included). Nothing is web-accessible, so sites can't detect it's installed.
+- Reads the page and draws a temporary overlay on top of it, removed again when you close it. It doesn't edit the page's content, store anything or connect anywhere: the extension has no network code, no storage permission, and no pages of its own.
+- Everything ships in the package (fonts included). Nothing is web-accessible, so a site can't tell it's installed. While the overlay is open, the page can see that it's there.
+- **Copy report** puts the hidden text on your clipboard with a note that it's evidence, not instructions, because pasting it into an AI assistant hands the AI those same instructions.
 
 ## Develop
 
@@ -34,6 +37,8 @@ node demo/make.mjs  # regenerates the demo page
 ```
 
 Load `dist/` from `chrome://extensions` or `edge://extensions` with developer mode on.
+
+A security audit is in `docs/security-audit.md`.
 
 Limits: text inside iframes and closed shadow roots isn't read, and the AI-instruction check is a set of English patterns, not a model.
 
