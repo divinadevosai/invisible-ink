@@ -63,13 +63,11 @@ const badge = (path) =>
     const [tab] = await chrome.tabs.query({ url: url + '*' });
     return chrome.action.getBadgeText({ tabId: tab.id });
   }, `http://127.0.0.1:${PORT}${path}`);
-// the real toolbar click runs background.js's listener; tests call the same steps
+// a toolbar click calls background.js's run(tab); tests call the same function
 const click = (path) =>
   sw.evaluate(async (url) => {
     const [tab] = await chrome.tabs.query({ url: url + '*' });
-    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['ink.js'] });
-    const [{ result: n }] = await chrome.scripting.executeScript({ target: { tabId: tab.id }, func: () => globalThis.invisibleInkCount });
-    await chrome.action.setBadgeText({ tabId: tab.id, text: typeof n === 'number' ? (n ? String(n) : '✓') : '' });
+    await run(tab);
   }, `http://127.0.0.1:${PORT}${path}`);
 
 async function inkOn(path) {
@@ -139,15 +137,9 @@ await check('demo page: finds every planted message', async () => {
 
 await check('clicking again closes it, Esc closes it', async () => {
   const page = ctx.pages().at(-1);
-  await sw.evaluate(async () => {
-    const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
-    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['ink.js'] });
-  });
+  await click('/');
   await page.waitForSelector('invisible-ink', { state: 'detached' });
-  await sw.evaluate(async () => {
-    const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
-    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['ink.js'] });
-  });
+  await click('/');
   await page.waitForSelector('invisible-ink');
   await page.keyboard.press('Escape');
   await page.waitForSelector('invisible-ink', { state: 'detached' });
@@ -196,6 +188,32 @@ await check('a hostile page can’t fake the count, fake Esc, or leave the fonts
   await esc.waitForSelector('invisible-ink', { state: 'detached' });
   assert.ok(!(await esc.evaluate(() => [...document.fonts].some((f) => f.family.includes('Invisible Ink')))), 'fonts removed on close');
   await esc.close();
+});
+
+await check('on a browser page it explains why instead of doing nothing', async () => {
+  const page = await ctx.newPage();
+  await page.goto('chrome://version');
+  await page.bringToFront();
+  const popup = await sw.evaluate(async () => {
+    // without the tabs permission a chrome:// URL can't be queried, so take the active tab
+    const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    await run(tab);
+    return chrome.action.getPopup({ tabId: tab.id });
+  });
+  assert.match(popup, /cant\.html$/);
+  // the card itself, under the extension's own strict CSP
+  const card = await ctx.newPage();
+  const cspErrors = [];
+  card.on('console', (m) => m.type() === 'error' && cspErrors.push(m.text()));
+  await card.setViewportSize({ width: 300, height: 260 });
+  await card.goto(popup);
+  await card.evaluate(() => document.fonts.ready);
+  assert.equal(await card.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(243, 238, 227)', 'stylesheet loaded');
+  assert.ok(await card.evaluate(() => document.fonts.check('30px "Invisible Ink Serif"')), 'fonts loaded');
+  assert.deepEqual(cspErrors, []);
+  await card.screenshot({ path: join(shots, 'cant.png') });
+  await card.close();
+  await page.close();
 });
 
 await check('no page errors', async () => assert.deepEqual(errors, []));

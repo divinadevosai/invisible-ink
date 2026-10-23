@@ -28,7 +28,13 @@ await build({
   loader: { '.woff2': 'binary', '.css': 'text' },
   legalComments: 'none',
 });
-copyFileSync(join(src, 'background.js'), join(dist, 'background.js'));
+for (const f of ['background.js', 'cant.html', 'cant.css']) copyFileSync(join(src, f), join(dist, f));
+// the "can't read this page" card uses the same type as the evidence card
+mkdirSync(join(dist, 'fonts'));
+const fontsrc = join(root, 'node_modules/@fontsource');
+copyFileSync(join(fontsrc, 'courier-prime/files/courier-prime-latin-400-normal.woff2'), join(dist, 'fonts', 'courier-prime.woff2'));
+copyFileSync(join(fontsrc, 'instrument-serif/files/instrument-serif-latin-400-normal.woff2'), join(dist, 'fonts', 'instrument-serif.woff2'));
+copyFileSync(join(fontsrc, 'instrument-serif/files/instrument-serif-latin-400-italic.woff2'), join(dist, 'fonts', 'instrument-serif-italic.woff2'));
 cpSync(join(src, 'icons'), join(dist, 'icons'), { recursive: true });
 writeFileSync(
   join(dist, 'LICENSES.txt'),
@@ -48,8 +54,8 @@ const manifest = {
   // activeTab: only the tab you click it on, only when you click. scripting: to run the reader there.
   permissions: ['activeTab', 'scripting'],
   commands: { _execute_action: { suggested_key: { default: 'Alt+Shift+X' }, description: 'Show what AI sees on this page' } },
-  // Invisible Ink has no pages of its own and never connects to anything.
-  content_security_policy: { extension_pages: "default-src 'none'; script-src 'self'; object-src 'none'" },
+  // Its only page is the "can't read this page" card, and it never connects to anything.
+  content_security_policy: { extension_pages: "default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; object-src 'none'" },
   minimum_chrome_version: '120',
 };
 writeFileSync(join(dist, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
