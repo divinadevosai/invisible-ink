@@ -1,0 +1,252 @@
+:host { all: initial; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+.stage {
+  --uv: #2a0e52;
+  --hot: #ff8f3a;
+  --ink: #e6ff4d;
+  --paper: #f3eee3;
+  --type: #23201b;
+  --faint: #6f6759;
+  --rule: rgba(64, 116, 168, 0.2);
+  --red: #c8321e;
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  font: 13px/20px 'Invisible Ink Type', 'Courier Prime', 'Courier New', Courier, monospace;
+  color: var(--type);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- the lamp ---- */
+.veil {
+  position: absolute;
+  inset: 0;
+  /* a UV wash: the page stays readable underneath, and the ink outshines it */
+  background: rgba(30, 5, 70, 0.72);
+  animation: fade 180ms var(--ease) both;
+}
+.beam {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(176, 140, 255, 0.34), rgba(140, 90, 255, 0.12) 55%, transparent);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+.still .beam { display: none; }
+.lamp-off .veil,
+.lamp-off .beam,
+.lamp-off .marks { opacity: 0; visibility: hidden; }
+
+/* ---- ink on the page ---- */
+.mark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--w);
+  height: var(--h);
+  --c: var(--ink);
+  animation: develop 260ms var(--ease) both;
+  animation-delay: calc(var(--i) * 22ms + 120ms);
+}
+.mark.ai { --c: var(--hot); }
+.box {
+  position: absolute;
+  inset: -4px;
+  border: 1.5px dashed var(--c);
+  border-radius: 3px;
+  box-shadow: 0 0 14px -2px var(--c), inset 0 0 14px -6px var(--c);
+}
+.tag {
+  position: absolute;
+  top: -13px;
+  left: -6px;
+  padding: 0 5px;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 18px;
+  letter-spacing: 0.06em;
+  color: #1a0833;
+  background: var(--c);
+  border-radius: 2px;
+  box-shadow: 0 0 12px var(--c);
+}
+.ink {
+  position: absolute;
+  top: calc(100% + 10px + var(--push, 0px));
+  left: -4px;
+  width: var(--ink-w);
+  max-height: 180px;
+  overflow: hidden;
+  padding: 7px 10px 8px 11px;
+  font-size: 13px;
+  line-height: 19px;
+  color: var(--c);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--c) 70%, transparent), 0 0 18px color-mix(in srgb, var(--c) 35%, transparent);
+  background: rgba(20, 4, 42, 0.78);
+  border-left: 2px solid var(--c);
+  border-radius: 0 3px 3px 0;
+  overflow-wrap: anywhere;
+}
+.over .ink { top: calc(-4px + var(--push, 0px)); background: rgba(20, 4, 42, 0.92); }
+.pin .box { inset: auto 0 auto 0; top: -6px; height: 0; border-width: 1.5px 0 0; border-radius: 0; box-shadow: 0 0 10px var(--c); }
+.pin .tag { top: -16px; }
+.over .box { display: none; }
+.over .tag { top: -22px; }
+.pulse .box,
+.pulse .ink { animation: flare 700ms var(--ease); }
+
+/* ---- the evidence card ---- */
+.card {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  bottom: 16px;
+  width: min(392px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  background: var(--paper);
+  border-radius: 2px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 2px 3px rgba(12, 0, 30, 0.25), 0 24px 60px -14px rgba(8, 0, 24, 0.7);
+  animation: deal 240ms var(--ease) both;
+  overflow: hidden;
+}
+.head {
+  position: relative;
+  padding: 14px 20px 12px 22px;
+  border-bottom: 2px solid rgba(200, 50, 30, 0.55);
+}
+.row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.small { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+.title {
+  margin-top: 6px;
+  font: 400 40px/40px 'Invisible Ink Serif', 'Instrument Serif', Georgia, serif;
+  letter-spacing: -0.01em;
+  outline: none;
+}
+.title em { font-style: italic; }
+.where { margin-top: 6px; display: flex; gap: 6px; align-items: baseline; min-width: 0; padding-right: 112px; white-space: nowrap; }
+.url { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stamp {
+  position: absolute;
+  top: 30px;
+  right: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 96px;
+  padding: 5px 9px 6px;
+  color: var(--red);
+  border: 3px double currentColor;
+  border-radius: 5px;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: rotate(-7deg);
+  mix-blend-mode: multiply;
+  opacity: 0.86;
+  animation: stamp 190ms var(--ease) 200ms both;
+  -webkit-mask-image: repeating-radial-gradient(circle at 30% 40%, #000 0 1.2px, rgba(0, 0, 0, 0.72) 1.6px 2.4px);
+  mask-image: repeating-radial-gradient(circle at 30% 40%, #000 0 1.2px, rgba(0, 0, 0, 0.72) 1.6px 2.4px);
+}
+.stamp .big { font: 400 34px/32px 'Invisible Ink Serif', Georgia, serif; letter-spacing: 0; }
+.stamp.clear { color: #2c4f9e; }
+
+.body {
+  flex: 1;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 10px 20px 20px 22px;
+  background-image: repeating-linear-gradient(to bottom, transparent 0 19px, var(--rule) 19px 20px);
+  background-attachment: local;
+  background-position: 0 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(35, 32, 27, 0.3) transparent;
+}
+.lede { margin-bottom: 20px; }
+.sec { margin-bottom: 20px; }
+.sec h2 { font-weight: 700; font-size: 15px; line-height: 20px; margin-top: 20px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red); }
+.also h2 { color: var(--faint); }
+.items { list-style: none; }
+.item { padding: 0 0 20px; }
+.item .row { align-items: center; }
+.how { font-size: 11px; line-height: 20px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); min-width: 0; }
+.no { color: var(--type); margin-right: 4px; padding: 0 3px; border-radius: 2px; box-shadow: inset 0 -6px 0 rgba(198, 222, 40, 0.75); }
+.ai .no { box-shadow: inset 0 -6px 0 rgba(255, 143, 58, 0.6); }
+.quote {
+  margin-top: 0;
+  font-size: 13px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 7;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.why { font: italic 17px/20px 'Invisible Ink Serif', Georgia, serif; color: var(--red); }
+.off { font-size: 11px; color: var(--faint); white-space: nowrap; font-style: italic; }
+.facts { list-style: none; color: var(--faint); }
+.facts li::before { content: '— '; }
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.link {
+  flex: none;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: underline 1px;
+  text-underline-offset: 3px;
+  padding: 0 2px;
+}
+.link:hover { color: var(--red); }
+button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; border-radius: 2px; }
+
+.foot { padding: 12px 20px 14px 22px; border-top: 1px solid rgba(35, 32, 27, 0.14); background: var(--paper); }
+.fine { text-transform: none; letter-spacing: 0.02em; margin-bottom: 10px; }
+.buttons { display: flex; gap: 8px; }
+.btn {
+  height: 32px;
+  padding: 0 12px;
+  border: 1.5px solid var(--type);
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: transform 120ms var(--ease);
+}
+.btn:active { transform: scale(0.97); }
+.btn.dark { margin-left: auto; background: var(--type); color: var(--paper); display: inline-flex; align-items: center; gap: 8px; }
+kbd { font: inherit; font-size: 10px; font-weight: 400; text-transform: lowercase; opacity: 0.65; }
+@media (hover: hover) {
+  .btn:hover { background: rgba(35, 32, 27, 0.08); }
+  .btn.dark:hover { background: #000; }
+}
+
+@keyframes fade { from { opacity: 0; } }
+@keyframes develop { from { opacity: 0; filter: blur(3px); } }
+@keyframes deal { from { opacity: 0; transform: translateX(14px); } }
+@keyframes stamp { from { opacity: 0; transform: rotate(-7deg) scale(1.5); } }
+@keyframes flare { 40% { box-shadow: 0 0 34px 6px var(--c); } }
+
+.still *, .still { animation: none !important; transition: none !important; }
+
+@media (max-width: 520px) {
+  .card { top: auto; height: 62vh; left: 8px; right: 8px; bottom: 8px; width: auto; }
+}
