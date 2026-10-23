@@ -36,6 +36,8 @@ npm run test:e2e    # loads dist/ into Chromium and checks every trick on demo/i
 node demo/make.mjs  # regenerates the demo page
 ```
 
+Store listing: `docs/store.md`. Website: https://swe3we.dev/invisible-ink/
+
 Load `dist/` from `chrome://extensions` or `edge://extensions` with developer mode on.
 
 A security audit is in `docs/security-audit.md`.

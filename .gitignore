@@ -3,3 +3,4 @@ dist/
 *.zip
 .shots/
 promo/out/
+docs/store/raw/

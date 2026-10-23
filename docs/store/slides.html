@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Invisible Ink store images</title>
+<!-- node docs/store/make.mjs renders each .slide to a PNG. raw/ comes from capture.mjs (real screenshots). -->
+<style>
+  @font-face { font-family: 'Type'; src: url(../../node_modules/@fontsource/courier-prime/files/courier-prime-latin-400-normal.woff2); }
+  @font-face { font-family: 'Type'; font-weight: 700; src: url(../../node_modules/@fontsource/courier-prime/files/courier-prime-latin-700-normal.woff2); }
+  @font-face { font-family: 'Serif'; src: url(../../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2); }
+  @font-face { font-family: 'Serif'; font-style: italic; src: url(../../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2); }
+  :root { --uv: #1d0838; --ink: #e6ff4d; --hot: #ff8f3a; --paper: #f3eee3; --red: #c8321e; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #333; padding: 20px; display: grid; gap: 20px; justify-content: start; }
+  .slide { position: relative; overflow: hidden; width: 1280px; height: 800px; color: #f1ecfb; font-family: 'Type', monospace;
+    background: radial-gradient(900px 600px at 70% 30%, #3a1470, var(--uv) 70%); }
+  .glow { color: var(--ink); text-shadow: 0 0 18px rgba(230, 255, 77, .55), 0 0 40px rgba(230, 255, 77, .25); }
+  h1 { font: 400 84px/0.98 'Serif'; letter-spacing: -.015em; }
+  h1 em { font-style: italic; }
+  .kicker { font-size: 18px; letter-spacing: .16em; text-transform: uppercase; color: #b9a8d8; margin-bottom: 22px; display: flex; align-items: center; gap: 12px; }
+  .kicker img { width: 30px; height: 30px; }
+  p.body { font-size: 21px; line-height: 1.6; color: #d8cdea; margin-top: 26px; max-width: 30ch; }
+
+  /* 1: the real thing, full bleed */
+  #s1 { background: #000; }
+  #s1 > img { width: 1280px; height: 800px; display: block; }
+
+  /* 2: decoded */
+  #s2 { display: grid; grid-template-columns: 430px 1fr; align-items: center; gap: 40px; padding-left: 80px; }
+  #s2 .shot { width: 760px; height: 600px; border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.1), 0 30px 80px -10px rgba(0,0,0,.7), 0 0 120px -30px rgba(230,255,77,.35);
+    background: url(raw/scrolled-2x.png) no-repeat; background-size: 1792px 1120px; background-position: -400px -50px; }
+
+  /* 3: privacy */
+  #s3 { display: grid; grid-template-columns: 1fr 470px; align-items: center; gap: 30px; padding: 0 80px; }
+  #s3 ul { list-style: none; padding: 0; margin-top: 30px; font-size: 21px; line-height: 1.5; color: #d8cdea; }
+  #s3 li { padding: 12px 0 12px 34px; position: relative; border-top: 1px solid rgba(255,255,255,.08); }
+  #s3 li::before { content: ''; position: absolute; left: 4px; top: 22px; width: 12px; height: 12px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 12px var(--ink); }
+  #s3 li b { color: #fff; font-weight: 700; }
+  .card { background: var(--paper); color: #23201b; border-radius: 3px; padding: 26px 28px 96px; position: relative; transform: rotate(1.2deg);
+    box-shadow: 0 30px 70px -14px rgba(0,0,0,.75); background-image: repeating-linear-gradient(to bottom, transparent 0 27px, rgba(64,116,168,.2) 27px 28px); background-position: 0 92px; }
+  .card .small { font-size: 14px; letter-spacing: .14em; text-transform: uppercase; color: #6f6759; }
+  .card h2 { font: 400 46px/1 'Serif'; margin: 8px 0 18px; padding-bottom: 14px; border-bottom: 2px solid rgba(200,50,30,.55); }
+  .card h2 em { font-style: italic; }
+  .card p { font-size: 19px; line-height: 28px; }
+  .stamp { position: absolute; right: 26px; bottom: 14px; color: var(--red); border: 4px double currentColor; border-radius: 6px; padding: 8px 14px; font: 700 17px/20px 'Type'; letter-spacing: .14em; text-transform: uppercase; text-align: center; transform: rotate(-8deg); opacity: .88; mix-blend-mode: multiply; }
+  .toolbar { display: flex; align-items: center; gap: 14px; margin-top: 56px; font-size: 17px; color: #b9a8d8; }
+  .tb { position: relative; width: 58px; height: 58px; border-radius: 14px; background: #2b2236; display: grid; place-items: center; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
+  .tb img { width: 34px; height: 34px; }
+  .tb span { position: absolute; right: -6px; bottom: -6px; background: var(--red); color: #fff; font: 700 15px/1 system-ui, sans-serif; padding: 4px 6px; border-radius: 6px; }
+
+  /* promo tile */
+  #tile { width: 440px; height: 280px; padding: 30px 32px; display: grid; align-content: center; gap: 4px; background: radial-gradient(360px 260px at 80% 20%, #4a1d8c, var(--uv) 75%); }
+  #tile img { width: 64px; height: 64px; filter: drop-shadow(0 0 16px rgba(230,255,77,.45)); margin-bottom: 8px; }
+  #tile h1 { font-size: 58px; color: #fff; }
+  #tile p { font: italic 30px 'Serif'; }
+</style>
+</head>
+<body>
+<section class="slide" id="s1"><img src="raw/lamp.png" alt=""></section>
+
+<section class="slide" id="s2">
+  <div>
+    <div class="kicker"><img src="../../src/icons/128.png" alt="">Invisible Ink</div>
+    <h1>Invisible to you.<br><em class="glow">Plain to AI.</em></h1>
+    <p class="body">White-on-white text, 1px type, notes in the code and whole sentences hidden in invisible Unicode, decoded and lit up where they sit.</p>
+  </div>
+  <div class="shot"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div>
+    <div class="kicker"><img src="../../src/icons/128.png" alt="">Invisible Ink</div>
+    <h1>Runs only when<br><em class="glow">you click.</em></h1>
+    <ul>
+      <li><b>One tab, one click.</b> No access to any site until you press the ink drop.</li>
+      <li><b>Nothing leaves your browser.</b> No servers, no account, no tracking.</li>
+      <li><b>Can’t be faked.</b> The count on the toolbar comes from the extension, not the page.</li>
+    </ul>
+  </div>
+  <div>
+    <div class="card">
+      <div class="small">Exhibit list · Privacy</div>
+      <h2>Invisible <em>Ink</em></h2>
+      <p>Reads the page you’re on,<br>draws on top of it, and<br>forgets it when you close.</p>
+      <div class="stamp">Nothing<br>sent<br>anywhere</div>
+    </div>
+    <div class="toolbar"><div class="tb"><img src="../../src/icons/128.png" alt=""><span>10</span></div>messages for AI on this page</div>
+  </div>
+</section>
+
+<section class="slide" id="tile">
+  <img src="../../src/icons/128.png" alt="">
+  <h1>Invisible <em>Ink</em></h1>
+  <p class="glow">See what AI sees.</p>
+</section>
+</body>
+</html>
