@@ -2,6 +2,8 @@
 
 See what AI sees on a web page.
 
+**[Get Invisible Ink for Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/jbncjedcdohkmokiojopopddapilcnef)** · [swe3we.dev/invisible-ink](https://swe3we.dev/invisible-ink/)
+
 Pages can carry text that people never see but AI assistants read: white-on-white sentences, 1px type, HTML comments, alt text, and whole messages hidden in invisible Unicode (tag characters and variation selectors). When you ask an assistant to summarise a page, that text can quietly steer the answer. This is called *prompt injection*.
 
 Click Invisible Ink (or press **Alt+Shift+X**) and the page goes under a UV lamp. Hidden ink glows where it sits, and an evidence card lists everything written for an AI rather than for you, with the reasons it was flagged. Click again or press **Esc** to close.

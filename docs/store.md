@@ -1,5 +1,7 @@
 # Invisible Ink: the Edge Add-ons listing
 
+Live on Edge Add-ons: https://microsoftedge.microsoft.com/addons/detail/jbncjedcdohkmokiojopopddapilcnef
+
 Upload `invisible-ink-<version>.zip` (`npm run build`). Images are in `docs/store/`. `capture.mjs` takes real screenshots and `make.mjs` renders `slides.html` to the store images.
 
 ## Name (from the package)
