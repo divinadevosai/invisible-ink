@@ -126,7 +126,7 @@ https://swe3we.dev/invisible-ink/privacy.html
 `required: ["none"]`. Invisible Ink reads the page in the browser and sends nothing anywhere.
 
 ## Licence
-Choose to match the repository. It currently has no licence file, so it's "All Rights Reserved" until one is added (the website calls it open source, so add one: MIT is the usual choice).
+MIT (the repository's `LICENSE`).
 
 ## Is the code minified or bundled?
 **Yes.** esbuild bundles `src/` into `ink.js`, with the fonts from the `@fontsource` packages embedded. Upload the source zip.

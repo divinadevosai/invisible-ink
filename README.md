@@ -46,4 +46,4 @@ A security audit is in `docs/security-audit.md`.
 
 Limits: text inside iframes and closed shadow roots isn't read, and the AI-instruction check is a set of English patterns, not a model.
 
-© 2026 Sweeney Creative. Courier Prime and Instrument Serif are under the SIL Open Font License 1.1.
+MIT licence, © 2026 Sweeney Creative (SWE3WE): see `LICENSE`. Courier Prime and Instrument Serif are under the SIL Open Font License 1.1.

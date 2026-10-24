@@ -39,7 +39,7 @@ copyFileSync(join(fontsrc, 'instrument-serif/files/instrument-serif-latin-400-it
 cpSync(join(src, 'icons'), join(dist, 'icons'), { recursive: true });
 writeFileSync(
   join(dist, 'LICENSES.txt'),
-  'Invisible Ink © 2026 Sweeney Creative.\n\nIncludes the Courier Prime typeface by Alan Dague-Greene and the Instrument Serif typeface by Instrument, both under the SIL Open Font License 1.1:\nhttps://openfontlicense.org\n',
+  'Invisible Ink © 2026 Sweeney Creative, under the MIT licence: https://github.com/divinadevosai/invisible-ink/blob/main/LICENSE\n\nIncludes the Courier Prime typeface by Alan Dague-Greene and the Instrument Serif typeface by Instrument, both under the SIL Open Font License 1.1:\nhttps://openfontlicense.org\n',
 );
 
 const icons = { 16: 'icons/16.png', 32: 'icons/32.png', 48: 'icons/48.png', 128: 'icons/128.png' };
