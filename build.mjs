@@ -1,5 +1,6 @@
 // npm run build → dist/ (load unpacked from chrome://extensions or edge://extensions)
 //               → invisible-ink-<version>.zip (upload to the Chrome Web Store and Edge Add-ons)
+//               → invisible-ink-<version>-firefox.zip (upload to Firefox Add-ons)
 import { build } from 'esbuild';
 import { spawnSync } from 'node:child_process';
 import { copyFileSync, cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -63,4 +64,22 @@ const zip = join(root, `invisible-ink-${version}.zip`);
 rmSync(zip, { force: true });
 const z = spawnSync('zip', ['-qr', zip, '.'], { cwd: dist, stdio: 'inherit' });
 if (z.status !== 0) throw new Error('zip failed');
-console.log(`Built dist/ and ${zip.slice(root.length + 1)}`);
+// Firefox: the same build with what Firefox needs in its manifest. It has no extension service workers (the
+// background runs as a page from "scripts"), needs a fixed add-on ID (never change it), and new add-ons must
+// declare what data they collect: none. Reviewers rebuild this from source with `npm ci && npm run build`.
+const FIREFOX_ID = 'invisible-ink@swe3we.dev';
+const firefox = join(root, 'dist-firefox');
+rmSync(firefox, { recursive: true, force: true });
+cpSync(dist, firefox, { recursive: true });
+const { service_worker: worker, ...background } = manifest.background;
+const { minimum_chrome_version: _chromeOnly, ...shared } = manifest;
+const firefoxManifest = {
+  ...shared,
+  background: { ...background, scripts: [worker] },
+  browser_specific_settings: { gecko: { id: FIREFOX_ID, strict_min_version: '128.0', data_collection_permissions: { required: ['none'] } } },
+};
+writeFileSync(join(firefox, 'manifest.json'), JSON.stringify(firefoxManifest, null, 2) + '\n');
+const firefoxZip = join(root, `invisible-ink-${version}-firefox.zip`);
+rmSync(firefoxZip, { force: true });
+if (spawnSync('zip', ['-qr', firefoxZip, '.'], { cwd: firefox, stdio: 'inherit' }).status !== 0) throw new Error('zip failed');
+console.log(`Built dist/, dist-firefox/, ${zip.slice(root.length + 1)} (Chrome and Edge) and ${firefoxZip.slice(root.length + 1)} (Firefox)`);

@@ -93,3 +93,57 @@ Choose "Yes, I need to provide … other info" and paste:
 > activeTab + scripting only, no host permissions, no storage, no network code, no web-accessible resources. Results are drawn in a closed shadow root and page text is only ever inserted as textContent. Source and a security audit: https://github.com/divinadevosai/invisible-ink
 >
 > Support: hello@swe3we.dev
+
+---
+
+# Firefox Add-ons (addons.mozilla.org)
+
+Upload `invisible-ink-<version>-firefox.zip` and, when asked about bundled code, the source zip (`git archive --format=zip HEAD`). `npm run build` makes the Firefox zip from the same build: the manifest adds Firefox's add-on ID, background `scripts` instead of a service worker, `strict_min_version` 128 and `data_collection_permissions: none`.
+
+## Add-on ID (never change it)
+`invisible-ink@swe3we.dev`
+
+## Name
+Invisible Ink — see what AI sees
+
+## Summary (131 of 250 characters)
+See what AI sees on a web page: hidden text, invisible Unicode and instructions aimed at AI assistants. Runs only when you click it.
+
+## Description
+Use the description above.
+
+## Categories
+Privacy & Security
+
+## Support
+- Email: hello@swe3we.dev
+- Website: https://swe3we.dev/invisible-ink/
+
+## Privacy policy
+https://swe3we.dev/invisible-ink/privacy.html
+
+## Data collection (in the manifest)
+`required: ["none"]`. Invisible Ink reads the page in the browser and sends nothing anywhere.
+
+## Licence
+Choose to match the repository. It currently has no licence file, so it's "All Rights Reserved" until one is added (the website calls it open source, so add one: MIT is the usual choice).
+
+## Is the code minified or bundled?
+**Yes.** esbuild bundles `src/` into `ink.js`, with the fonts from the `@fontsource` packages embedded. Upload the source zip.
+
+## Notes to reviewer
+> No account or login is needed.
+>
+> HOW TO TEST
+> 1. Open https://swe3we.dev/quiet-kitchen/brown-butter-banana-bread/ — a test page we made with 7 harmless hidden instructions to AI (white-on-white text, 1px text, off-screen text, an HTML comment, alt text, the meta description, and a sentence in invisible Unicode tag characters).
+> 2. Click the Invisible Ink toolbar button (or Alt+Shift+X). The page is tinted violet, the hidden text glows where it sits, and an evidence card lists all 7. The toolbar icon shows 7.
+> 3. Click the button again, or press Esc, to close.
+> 4. On any ordinary page, the card says "Nothing addressed to AI" and the icon shows ✓.
+>
+> BUILD (source attached)
+> Node 22 and npm, plus the `zip` command. Run `npm ci` then `npm run build`. The upload is `invisible-ink-<version>-firefox.zip`; its contents are `dist-firefox/`.
+>
+> PERMISSIONS
+> activeTab + scripting only: the extension reads only the tab you click it on. No storage, no network code, no host permissions.
+>
+> Support: hello@swe3we.dev
