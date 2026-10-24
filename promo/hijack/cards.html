@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hijack video cards</title>
+<!-- Captions (transparent PNGs) and the end card for the Copilot video. make.mjs renders each #id. -->
+<style>
+  @font-face { font-family: 'JetBrains Mono'; src: url(../jetbrains-mono.woff2) format('woff2'); font-weight: 100 800; }
+  @font-face { font-family: Michroma; src: url(../michroma.woff2) format('woff2'); }
+  @font-face { font-family: 'Serif'; src: url(../../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2); }
+  @font-face { font-family: 'Serif'; font-style: italic; src: url(../../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2); }
+  * { margin: 0; box-sizing: border-box; }
+  html, body { background: transparent; }
+  .frame { position: relative; width: 1920px; height: 1080px; display: none; }
+  .frame.on { display: block; }
+  .cap { position: absolute; left: 50%; bottom: 72px; transform: translateX(-50%); white-space: nowrap; padding: 18px 30px 20px; border-radius: 14px;
+    background: rgba(7, 4, 13, .86); box-shadow: 0 0 0 1px rgba(255,255,255,.1), 0 20px 60px rgba(0,0,0,.5); font: 500 38px 'JetBrains Mono'; color: #f1ecfb; }
+  .cap::before { content: '> '; color: #3cffb4; }
+  .cap em { font-style: normal; color: #e6ff4d; }
+  #end { background: radial-gradient(900px 600px at 50% 42%, #2c0f57, #07040d 75%); color: #ece6f6; text-align: center; }
+  #end .stack { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 20px; }
+  #end img { width: 140px; height: 140px; filter: drop-shadow(0 0 40px rgba(230,255,77,.35)); }
+  #end h1 { font: 400 140px/1 'Serif'; letter-spacing: -.02em; }
+  #end h1 em { font-style: italic; }
+  #end p.tag { font: italic 44px 'Serif'; color: #e6ff4d; text-shadow: 0 0 24px rgba(230,255,77,.4); }
+  #end p.meta { font: 22px 'JetBrains Mono'; color: #b8aed0; margin-top: 14px; }
+  #end p.meta span { color: #3cffb4; }
+  #end .brand { position: absolute; bottom: 54px; left: 0; right: 0; font: 18px Michroma; letter-spacing: .4em; color: #8d83a6; }
+</style>
+</head>
+<body>
+<div class="frame" id="c1"><div class="cap">I hid <em>7 instructions to AI</em> in this recipe page.</div></div>
+<div class="frame" id="c2"><div class="cap">Then I asked <em>Copilot</em> to summarise it.</div></div>
+<div class="frame" id="c3"><div class="cap">It didn't take the bait. <em>But it read them.</em></div></div>
+<div class="frame" id="c4"><div class="cap">Here's what it was told.</div></div>
+<div class="frame" id="c5"><div class="cap">Not every assistant will say <em>no</em>.</div></div>
+<div class="frame" id="end">
+  <div class="stack">
+    <img src="../../docs/store/logo-300.png" alt="">
+    <h1>Invisible <em>Ink</em></h1>
+    <p class="tag">See what AI sees.</p>
+    <p class="meta">Free on Microsoft Edge <span>·</span> open source <span>·</span> nothing leaves your browser</p>
+  </div>
+  <div class="brand">SWE3WE</div>
+</div>
+</body>
+</html>
